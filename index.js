@@ -27,6 +27,33 @@ app.get('/paramdyn', (req, res) => {
   res.send(`il est ${requestTime}`);
 });
 
+// route ajouter contact
+
+app.get('/contact',(req,res)=>{
+  async function main() {
+    await prisma.user.create({
+      data: {
+        name: 'Alice',
+        email: 'alice@prisma.io',
+        posts: {
+          create: { title: 'Hello World' },
+        },
+        profile: {
+          create: { bio: 'I like turtles' },
+        },
+      },
+    })
+  
+    const allUsers = await prisma.user.findMany({
+      include: {
+        posts: true,
+        profile: true,
+      },
+    })
+    console.dir(allUsers, { depth: null })
+  }
+})
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
